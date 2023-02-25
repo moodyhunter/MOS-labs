@@ -20,7 +20,7 @@ jobs:
 
       - name: Make the name of the PDF file with the commit hash
         run: |
-          mv lab-tutorial.pdf lab-tutorial-$(git describe --long --tags --all | sed 's/heads\///g').pdf
+          mv lab-tutorial.pdf lab-tutorial-$(git rev-list --count HEAD)-$(git describe --long --tags --all | sed 's/heads\///g').pdf
 
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
