@@ -17,10 +17,15 @@
 }
 
 \usepackage{mdframed}
-\newenvironment{note}[0]    { \begin{mdframed}[backgroundcolor=blue!25]  \textbf{Note:}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
-\newenvironment{warning}[0] { \begin{mdframed}[backgroundcolor=red!25]   \textbf{Warning:} \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
-\newenvironment{tip}[0]     { \begin{mdframed}[backgroundcolor=green!25] \textbf{Tip:}     \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
-\newenvironment{exercise}[0]{ \begin{mdframed}[backgroundcolor=yellow!25]\textbf{Exercise:}\begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
+\newenvironment{tip}        { \begin{tip*}{Tip:} }          { \end{tip*} }
+\newenvironment{note}       { \begin{note*}{Note:} }        { \end{note*} }
+\newenvironment{warning}    { \begin{warning*}{Warning:} }  { \end{warning*} }
+\newenvironment{exercise}   { \begin{exercise*}{Exercise:} }{ \end{exercise*} }
+
+\newenvironment{tip*}[1]        { \begin{mdframed}[backgroundcolor=green!25] \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
+\newenvironment{note*}[1]       { \begin{mdframed}[backgroundcolor=blue!25]  \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
+\newenvironment{warning*}[1]    { \begin{mdframed}[backgroundcolor=red!25]   \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
+\newenvironment{exercise*}[1]   { \begin{mdframed}[backgroundcolor=yellow!25]\textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
 
 \usepackage{tikz}
 \usetikzlibrary{arrows,shapes}
