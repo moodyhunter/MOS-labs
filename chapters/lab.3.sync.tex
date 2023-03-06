@@ -137,7 +137,7 @@ is not used because it is not unique across processes.)
     \item You can use the code at \texttt{userspace/tests/my\_mutex/} as a starting point.
 \end{exercise*}
 
-\subsection{Step 1: Defining the Mutex API}
+\subsection{Step 1: Understand the Mutex API}
 
 The very basic API of a mutex consists of two functions:
 
@@ -153,7 +153,7 @@ The very basic API of a mutex consists of two functions:
 If required, you may also want to implement your \texttt{my\_mutex\_init} function to initialize
 the mutex (e.g. set some initial values).
 
-\subsection{Step 2: Using the compare\_and\_exchange Function}
+\subsection{Step 2: Understand the compare\_and\_exchange Function}
 
 GCC provides a built-in function \texttt{\_\_sync\_bool\_compare\_and\_exchane\_n} that
 can be used to implement the \texttt{my\_mutex\_acquire} function, the function accepts
@@ -172,7 +172,7 @@ This function compares the value contained in \texttt{*ptr} with \texttt{expecte
 are equal, it will \texttt{exchange} the value in \texttt{*ptr} and \texttt{desired}, and
 return \texttt{true}. Otherwise, it will return \texttt{false}.
 
-\subsection{Step 3: Using the futex\_wait and futex\_wake System Calls}
+\subsection{Step 3: Understand the `futex\_wait' and `futex\_wake' System Calls}
 
 The \texttt{futex\_wait} and \texttt{futex\_wake} system call is wrapped by the
 the functions prefixied with \texttt{syscall\_}, e.g. \texttt{syscall\_futex\_wait}.
@@ -181,17 +181,30 @@ They are generated during the build process.
 The function accepts exactly the same arguments as the ones in the kernel introduced
 in the previous section.
 
-Example:
+Example usage of \texttt{futex\_wait}:
 
 \begin{verbatim}
-    // tell the kernel that at the moment, we expects futex_word == 1,
-    // and wait for someone to wake us up.
+    // tell the kernel that: at the moment, we decide to wait for the
+    // futex object based on the current value of futex_word = 1,
+    // until someone calls futex_wake to wake us up.
     syscall_futex_wait(&futex_word, 1);
 \end{verbatim}
 
-\subsection{Step 4: Implementing `my\_mutex\_acquire' and `my\_mutex\_release'}
+And for \texttt{futex\_wake}:
+
+\begin{verbatim}
+    // tell the kernel that we have changed the value in the futex object,
+    // and we want to wake up up to N thread(s) that are waiting for the
+    // futex object.
+    syscall_futex_wake(&futex_word, N);
+\end{verbatim}
+
+\subsection{Step 4: Implement `my\_mutex\_acquire' and `my\_mutex\_release'}
 
 Now it comes to the real implementation!
+
+The idea of a mutex is simple: Instead of \textbf{spinning} on a variable, we
+will use the futex to wait for the variable to be changed.
 
 \textbf{When Acquiring the Mutex:}
 
@@ -212,7 +225,7 @@ Now it comes to the real implementation!
           mutex, using \texttt{futex\_wake}.
 \end{itemize}
 
-\subsection{Step 5: Testing}
+\subsection{Step 5: Test Your Mutex Implementation}
 
 If you have implemented the mutex correctly, you can start testing by running the command
 below, in the build directory:
