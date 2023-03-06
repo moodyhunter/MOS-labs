@@ -155,7 +155,7 @@ the mutex (e.g. set some initial values).
 
 \subsection{Step 2: Understand the compare\_and\_exchange Function}
 
-GCC provides a built-in function \texttt{\_\_sync\_bool\_compare\_and\_exchane\_n} that
+GCC provides a built-in function \texttt{\_\_atomic\_compare\_exchange\_n} that
 can be used to implement the \texttt{my\_mutex\_acquire} function, the function accepts
 \textit{\textbf{six}} arguments, the first 3 arguments are the most important:
 
@@ -220,7 +220,7 @@ will use the futex to wait for the variable to be changed.
 \textbf{When Releasing the Mutex:}
 
 \begin{itemize}
-    \item We will use \texttt{compare\_and\_exchange} to release the mutex.
+    \item We can use the \texttt{\_\_atomic\_store\_n} to release the mutex.
     \item Then we notify the kernel to wake up one thread that is waiting for the
           mutex, using \texttt{futex\_wake}.
 \end{itemize}
