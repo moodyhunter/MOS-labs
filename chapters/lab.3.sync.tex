@@ -176,9 +176,7 @@ return \texttt{true}. Otherwise, it will return \texttt{false}.
 
 The \texttt{futex\_wait} and \texttt{futex\_wake} system call is wrapped by the
 the functions prefixied with \texttt{syscall\_}, e.g. \texttt{syscall\_futex\_wait}.
-They are generated during the build process.
-
-The function accepts exactly the same arguments as the ones in the kernel introduced
+These functions accept exactly the same arguments as the ones in the kernel introduced
 in the previous section.
 
 Example usage of \texttt{futex\_wait}:
@@ -203,27 +201,20 @@ And for \texttt{futex\_wake}:
 
 Now it comes to the real implementation!
 
-The idea of a mutex is simple: Instead of \textbf{spinning} on a variable, we
-will use the futex to wait for the variable to be changed.
+The idea of a mutex is simple:
 
-\textbf{When Acquiring the Mutex:}
+\begin{tip*}{Acquiring a Mutex}
+    \item We check if the mutex is already acquired by someone else.
+    \item If the mutex is not acquired, we will acquire the mutex \textbf{right away}.
+    \item Otherwise, we will wait for the mutex to be released.
+\end{tip*}
 
-\begin{itemize}
-    \item Firstly, we check if the mutex is already acquired by someone else.
-    \item If the mutex is already acquired, we will call \texttt{futex\_wait} to
-          wait for the mutex to be released.
-    \item If the mutex is not acquired, we will use \texttt{compare\_and\_exchange}
-          to acquire the mutex again, if the mutex is still acquired by someone
-          else, we will call \texttt{futex\_wait} again.
-\end{itemize}
-
-\textbf{When Releasing the Mutex:}
-
-\begin{itemize}
+\begin{tip*}{Releasing a Mutex}
     \item We can use the \texttt{\_\_atomic\_store\_n} to release the mutex.
-    \item Then we notify the kernel to wake up one thread that is waiting for the
-          mutex, using \texttt{futex\_wake}.
-\end{itemize}
+    Like the previous `compare and exchange' function, you should also use
+    \texttt{\_\_ATOMIC\_SEQ\_CST} as the third argument.
+    \item Then we notify the kernel to wake up one thread that is waiting for the mutex.
+\end{tip*}
 
 \subsection{Step 5: Test Your Mutex Implementation}
 
