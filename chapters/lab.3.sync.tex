@@ -134,7 +134,7 @@ is not used because it is not unique across processes.)
 \begin{exercise*}{Try it yourself!}
     \item There's already a mutex implementation in the kernel, but try implementing
     your own mutex using futex.
-    \item You can use the code at \texttt{userspace/tests/my\_mutex/} as a starting point.
+    \item You can use the code at \texttt{userspace/programs/my\_mutex/} as a starting point.
 \end{exercise*}
 
 \subsection{Step 1: Understand the Mutex API}
@@ -226,7 +226,7 @@ below, in the build directory:
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
         -serial stdio \
-        -append init=/tests/my_mutex
+        -append init=/initrd/programs/my_mutex
 \end{verbatim}
 
 You should see the following output (the thread IDs may be different):
@@ -253,7 +253,29 @@ synchronization methods:
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
         -serial stdio \
-        -append init=/tests/locks-bench
+        -append init=/initrd/programs/locks-bench
 \end{verbatim}
 
 See which method is the fastest, and why?
+
+\section{Optional Exercise}
+
+Under the folloing circumstances:
+
+\begin{enumerate}
+    \item There are two threads, \texttt{A} and \texttt{B}.
+    \item Thread \texttt{A} is holding a lock.
+    \item Thread \texttt{B} is waiting for the lock.
+    \item Thread \texttt{A} exits, without releasing the lock.
+\end{enumerate}
+
+\textbf{Think about the following questions:}
+
+\begin{itemize}
+    \item With the current implementation of \texttt{futex}
+    \item What will happen to the thread \texttt{B}?
+    \item Will it be woken up? Why?
+\end{itemize}
+
+\noindent
+For answers, please refer to the Linux manual page of \texttt{set\_robust\_list(2)}.
