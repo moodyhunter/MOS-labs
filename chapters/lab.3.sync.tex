@@ -16,17 +16,17 @@ The spinlock is implemented in the file \texttt{lib/include/lib/sync/spinlock.h}
 
 Under normal circumstances, the spinlock acquiring and releasing are defined as macros:
 
-\begin{verbatim}
+\begin{minted}{c}
 #define _spinlock_real_acquire(lock)                                    \
     do                                                                  \
     {                                                                   \
         while (__atomic_test_and_set(&(lock)->flag, __ATOMIC_ACQUIRE))  \
-            ; // spin here                                              \
+            ;                                                           \
     } while (0)
 
 #define _spinlock_real_release(lock) \
     __atomic_clear(&(lock)->flag, __ATOMIC_RELEASE)
-\end{verbatim}
+\end{minted}
 
 \begin{tip*}{The \texttt{test\_and\_set} function does the following:}
     \item Store the value of the flag into a temporary variable.
@@ -54,7 +54,7 @@ that ensures this operation is atomic.
 
 \subsection{Releasing the Spinlock}
 
-To release the spinlock, we simply set the flag to 0. You can see that the \texttt{\_\_atomic\_clear}
+To release the spinlock, we simply set the flag to 0. The \texttt{\_\_atomic\_clear}
 function is used.
 
 \section{Futex}
@@ -113,8 +113,8 @@ is not used because it is not unique across processes.)
     \item If the futex object is equal to the expected value, we will get the key of
           the futex object and then get the wait queue corresponds to the key.
     \item Then we will append the current thread to the wait queue.
-    \item Finally, we set the thread state to \texttt{THREAD\_STATE\_BLOCKED} and call
-          \texttt{reschedule()} to switch to another thread.
+    \item Finally, we set the thread state to \texttt{THREAD\_STATE\_BLOCKED} and \texttt{reschedule()}
+          to another thread.
     \item The thread will be woken up when someone calls \texttt{futex\_wake()} on
           the futex object.
 \end{itemize}
@@ -134,7 +134,7 @@ is not used because it is not unique across processes.)
 \begin{exercise*}{Try it yourself!}
     \item There's already a mutex implementation in the kernel, but try implementing
     your own mutex using futex.
-    \item You can use the code at \texttt{userspace/programs/my\_mutex/} as a starting point.
+    \item You can use the code at \texttt{userspace/tests/labs/lab3.1.c} as a starting point.
 \end{exercise*}
 
 \subsection{Step 1: Understand the Mutex API}
@@ -181,23 +181,23 @@ in the previous section.
 
 Example usage of \texttt{futex\_wait}:
 
-\begin{verbatim}
+\begin{minted}{c}
     // tell the kernel that: at the moment, we decide to wait for the
     // futex object based on the current value of futex_word = 1,
     // until someone calls futex_wake to wake us up.
     syscall_futex_wait(&futex_word, 1);
-\end{verbatim}
+\end{minted}
 
 And for \texttt{futex\_wake}:
 
-\begin{verbatim}
+\begin{minted}{c}
     // tell the kernel that we have changed the value in the futex object,
     // and we want to wake up up to N thread(s) that are waiting for the
     // futex object.
     syscall_futex_wake(&futex_word, N);
-\end{verbatim}
+\end{minted}
 
-\subsection{Step 4: Implement `my\_mutex\_acquire' and `my\_mutex\_release'}
+\subsection{Step 4: `my\_mutex\_acquire' and `my\_mutex\_release'}
 
 Now it comes to the real implementation!
 
@@ -226,7 +226,7 @@ below, in the build directory:
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
         -serial stdio \
-        -append init=/initrd/programs/my_mutex
+        -append init=/initrd/tests/lab3.1
 \end{verbatim}
 
 You should see the following output (the thread IDs may be different):
@@ -253,14 +253,17 @@ synchronization methods:
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
         -serial stdio \
-        -append init=/initrd/programs/locks-bench
+        -append init=/initrd/tests/lab3.2
 \end{verbatim}
 
-See which method is the fastest, and why?
+\begin{exercise}
+    \item What is the performance difference between the three methods?
+    \item Why is there such a difference?
+\end{exercise}
 
-\section{Optional Exercise}
+\section{[Extension]: Robust List}
 
-Under the folloing circumstances:
+You can use the \texttt{lab3.3} program to test this scenario:
 
 \begin{enumerate}
     \item There are two threads, \texttt{A} and \texttt{B}.
@@ -269,13 +272,14 @@ Under the folloing circumstances:
     \item Thread \texttt{A} exits, without releasing the lock.
 \end{enumerate}
 
-\textbf{Think about the following questions:}
 
-\begin{itemize}
+\begin{exercise*}{Think about it:}
     \item With the current implementation of \texttt{futex}
     \item What will happen to the thread \texttt{B}?
     \item Will it be woken up? Why?
-\end{itemize}
+\end{exercise*}
+
 
 \noindent
-For answers, please refer to the Linux manual page of \texttt{set\_robust\_list(2)}.
+For answers, please refer to the Linux manual page of \texttt{set\_robust\_list(2)}, can you
+implement a robust list in the MOS kernel?

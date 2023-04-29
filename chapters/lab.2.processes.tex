@@ -340,4 +340,53 @@ question:
     instead of creating a new process from a program?
 \end{quote}
 
-\dots TODO
+This is what \texttt{fork()} does. It creates a new process that is exactly the same as the
+current process, including the memory layout, the file descriptors (opened files), etc.
+
+In this section, we'll try to implement \texttt{fork()} in MOS.
+
+The actual fork code is located in \texttt{fork.c}, which contains only one function
+that we need to implement: \texttt{process\_handle\_fork()}.
+
+\begin{enumerate}
+    \item Being different from normal process creation, we need more control over this new process
+          created by \texttt{fork()}. We need to manually specify the entry point of the new process,
+          its context, its memory layout and so on.
+
+          So the first step is to use \texttt{process\_allocate} to create a new process, and
+          use \texttt{thread\_allocate} to create a new thread for this process.
+
+    \item The next step is to copy the opened files from the current process to the new process.
+          You should just follow the instructions in the file to implement this step.
+
+    \item The next step is to copy the memory layout from the current process to the new process.
+          There are also instructions in the file to help you implement this step.
+
+          \textbf{Note}: For a good implementation, no actual copying is needed.
+          (in fact, you just cannot copy between address spaces).
+
+    \item The next step is to copy the context from the current thread to the new thread.
+          This is done for you by the function \texttt{platform\_setup\_forked\_context}.
+\end{enumerate}
+
+\subsection{Test your implementation}
+
+After you have implemented \texttt{process\_handle\_fork()}, you can test your implementation
+by running the following command:
+
+\begin{minted}{bash}
+    qemu-system-i386 \
+        -kernel mos_multiboot.bin \
+        -initrd initrd.cpio \
+        -append "init=/initrd/tests/lab2.1" \
+        -m 4G -serial stdio
+\end{minted}
+
+For a correct implementation, you should see the following output:
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/c2.lab2.png}
+    \caption{The output of \texttt{lab2.1}}
+    \label{fig:lab2.1-fork}
+\end{figure}

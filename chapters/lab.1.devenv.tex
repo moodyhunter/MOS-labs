@@ -271,7 +271,7 @@ Once we have compiled MOS, we can run it in QEMU.
 The command passed to QEMU will be flexible based on your needs, but the most basic command is:
 
 \begin{verbatim}
-    qemu-system-i386 -kernel mos_multiboot.bin -initrd initrd.cpio -serial stdio
+    qemu-system-i386 -m 4G -kernel mos_multiboot.bin -initrd initrd.cpio -serial stdio
 \end{verbatim}
 
 You can pass more arguments to QEMU:
@@ -281,8 +281,13 @@ You can pass more arguments to QEMU:
     \item \texttt{-S} to pause the CPU before starting up, which allows GDB to take control of
           the booting process.
     \item \texttt{-m} to specify the amount of RAM to be allocated to the VM (say \texttt{-m 512M}).
-    \item \texttt{-append} to pass arguments to the kernel, for a list of supported arguments,
-          see the MOS documentation section \texttt{Kernel cmdline Reference}.
+          the preferred amount of RAM is 4GB, less RAM may cause the kernel to fail.
+    \item \texttt{-append} to pass arguments to the kernel, several arguments are:
+          \begin{itemize}
+              \item \texttt{quiet}: suppress (most-of) all non-warning kernel messages.
+              \item \texttt{init=}: path to the init program, e.g. \texttt{init=/initrd/programs/mossh}.
+          \end{itemize}
+          For a complete list of supported arguments, see the MOS documentation section.
     \item \dots For more possible arguments, you may want to read QEMU's documentation.
 \end{itemize}
 
@@ -435,9 +440,6 @@ Below are some exercises for you to practice and test your environment setup.
         \texttt{pr\_emerg} or \texttt{pr\_fatal}, they have similar usage like \texttt{printf}.
         \item Can you spot the difference between \texttt{pr\_info} and \texttt{pr\_info2}?
     \end{tip}
-
-    \item You can find a function call to \texttt{invoke\_setup\_functions} in \texttt{kernel/kernel\_init.c},
-    Try writing code to print out the variable \texttt{init\_path} after the function call.
 
     \item Try to set a breakpoint somewhere in the \texttt{mos\_start\_kernel} function, start debugging
     the kernel and see if it works.

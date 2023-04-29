@@ -1,4 +1,4 @@
-\documentclass[a4paper]{report}
+\documentclass[a4paper,12pt]{report}
 
 \usepackage[nopdftrailerid=true]{pdfprivacy}
 \usepackage{pdfpages}
@@ -7,6 +7,8 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{bytefield}
+\usepackage{amsmath}
+\usepackage{minted}
 
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily\small,
@@ -23,7 +25,7 @@
 \newenvironment{exercise}   { \begin{exercise*}{Exercise:} }{ \end{exercise*} }
 
 \newenvironment{tip*}[1]        { \begin{mdframed}[backgroundcolor=green!25] \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
-\newenvironment{note*}[1]       { \begin{mdframed}[backgroundcolor=blue!25]  \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
+\newenvironment{note*}[1]       { \begin{mdframed}[backgroundcolor=blue!20]  \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
 \newenvironment{warning*}[1]    { \begin{mdframed}[backgroundcolor=red!25]   \textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
 \newenvironment{exercise*}[1]   { \begin{mdframed}[backgroundcolor=yellow!25]\textbf{#1}    \begin{itemize} \itemsep0em } { \end{itemize} \end{mdframed} }
 
@@ -58,10 +60,10 @@
 
 \tableofcontents
 
-% \include{chapters/lab.0.introduction.tex}
-% \include{chapters/lab.1.devenv.tex}
-% \include{chapters/lab.2.processes.tex}
-% \include{chapters/lab.3.sync.tex}
+\include{chapters/lab.0.introduction.tex}
+\include{chapters/lab.1.devenv.tex}
+\include{chapters/lab.2.processes.tex}
+\include{chapters/lab.3.sync.tex}
 \include{chapters/lab.4.mm.tex}
 
 \end{document}
