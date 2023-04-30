@@ -91,9 +91,9 @@ toolchain is exactly for this situation.
     \item One should never use a hosted compiler (e.g. the \texttt{gcc} installed on the lab machine)
     to cross-compile for a bare-metal environment when they are targeting a different architecture,
     (\texttt{x86} and \texttt{x86\_64} are different), it \textit{\textbf{may sometimes}} work, but
-    you'll have to add a lot of unnecessary flags.
+    you may encouter some weird bugs.
 
-    \item See \url{https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F} for more information.
+    \item See \url{https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F}.
 \end{warning}
 
 \section{Installating the Tools}
@@ -136,10 +136,11 @@ binary from
 (choose the i686 one).
 
 \begin{warning}
-    \item Using pre-built binary saves time, but please consider doing so \textbf{only} if
-    you trust the author.
-    \item The above pre-built binary is built with GitHub Actions, and is built on Ubuntu 20.04.5
-    LTS (Image \texttt{ubuntu-20.04} version \texttt{20221027.1}).
+    \item Using pre-built binary saves time, but please consider doing so \textbf{only} if you
+    trust the author.
+    \item The pre-built binary is built on Ubuntu, it \textbf{may not} work on other Linux
+    distributions, so the author \textbf{strongly} recommends you to build the toolchain from
+    source, see next section.
 \end{warning}
 
 \subsubsection{Building From Source}
@@ -148,21 +149,33 @@ The source code of binutils and gcc can be found at
 \href{https://www.gnu.org/software/binutils}{GNU Binutils's Website} and
 \href{https://gcc.gnu.org}{GNU GCC's Website} respectively.
 
-\begin{note}
-    \item For Arch Linux users, checkout
-    \href{https://github.com/moodyhunter/repo/blob/main/moody/i686-elf-binutils/PKGBUILD}{i686-elf-binutils},
-    \href{https://github.com/moodyhunter/repo/blob/main/moody/i686-elf-gcc/PKGBUILD}{i686-elf-gcc} and
-    \href{https://github.com/moodyhunter/repo/blob/main/moody/i686-elf-gdb/PKGBUILD}{i686-elf-gdb}.
-\end{note}
+The script located at \texttt{docs/assets/i686-elf-toolchain.sh} downloads, compiles and
+installs the toolchain into the directory specified by the \texttt{PREFIX} variable.
 
-The script located at \texttt{docs/assets/i686-elf-toolchain.sh} can download, compile and
-install the toolchain into the directory specified by the \texttt{PREFIX} variable.
+It is not suggested to install the toolchain to a system directory (e.g. \texttt{/usr}),
+because it may cause conflicts with the system's package manager.
 
 \section{Building MOS}
 
 \begin{note}
+    \item \texttt{PATH} is an environment variable that specifies a set of directories, separated
+    by \texttt{:}, to search for executable files in response to commands issued by a user.
     \item Before you continue reading, make sure \texttt{i686-elf-gcc}, \texttt{i686-elf-ld},
-    \texttt{nasm}, \texttt{cpio} are in your \texttt{PATH}.
+    \texttt{nasm}, \texttt{cpio} are in your \texttt{PATH}. You can use the command below to check:
+    \begin{minted}{bash}
+    $ echo $PATH
+    \end{minted}
+    and use the command below to add them to your \texttt{PATH}:
+    \begin{minted}{bash}
+    $ export PATH="/TO/TOOLCHAINS/bin:$PATH"
+    \end{minted}
+    and use the command below to check if they are in your \texttt{PATH}:
+    \begin{minted}{bash}
+    $ which i686-elf-gcc
+    $ which i686-elf-ld
+    $ which nasm
+    $ which cpio
+    \end{minted}
 \end{note}
 
 \subsection{Cloning the Repository}
@@ -200,7 +213,7 @@ bunch of output, similar to \ref{fig:cmake-output}.
 Don't worry if you see \texttt{C compiler ABI info} and \texttt{CXX compiler ABI info}
 fails, it's because CMake doesn't know what to do with a cross compiler, this check is meaningless.
 
-You may also see \texttt{grum-mkrescue} is not found, don't worry as well :), we are not going to use it.
+You may also see \texttt{grub-mkrescue} is not found, don't worry as well :), we are not going to use it.
 
 If you don't see the \texttt{-- Configuring done} or \texttt{-- Generating done} line, then
 something has been wrong, and you should scroll up and see what's wrong.
@@ -226,17 +239,15 @@ See the table below for an example list of targets.
     \small
     \begin{tabular}{|l|l|l|}
         \hline
-        \textbf{Target}                   & \textbf{Description}                & \textbf{Depends on}                           \\ \hline
-        \texttt{mos\_kernel}              & kernel without boot support         & \textit{None}                                 \\ \hline
-        \texttt{mos\_initrd}              & The Initial RAMDisk Image           & \texttt{mos\_userspace\_programs}             \\ \hline
-        \texttt{mos\_userspace\_programs} & Userspace programs                  & \texttt{init}, other userspace programs \dots \\ \hline
-        \texttt{init}                     & The init program                    & \dots                                         \\ \hline
-        \texttt{multiboot}                & \texttt{multiboot} compatible image & \texttt{mos\_kernel}                          \\ \hline
+        \textbf{Target}      & \textbf{Description} & \textbf{Depends on}    \\ \hline
+        \texttt{mos\_kernel} & Bare kernel          & \textit{None}          \\ \hline
+        \texttt{mos\_initrd} & The initial ramdisk  & All userspace programs \\ \hline
+        \texttt{multiboot}   & A bootable kernel    & \texttt{mos\_kernel}   \\ \hline
     \end{tabular} \\
     \begin{note}
         \item This is not a complete list.
-        \item For a complete list of targets, run \texttt{make mos\_print\_summary} or \texttt{ninja mos\_print\_summary}
-        and observe the ``\texttt{Userspace Targets}'', ``\texttt{Utility Targets}'' and ``\texttt{Bootable Targets}'' sections.
+        \item For a complete list of targets, you can look at the \texttt{summary.txt} in the \texttt{build} directory,
+        and see the ``\texttt{Userspace Targets}'', ``\texttt{Utility Targets}'' and ``\texttt{Bootable Targets}'' section.
     \end{note}
     \caption{Targets}
     \label{tab:targets}

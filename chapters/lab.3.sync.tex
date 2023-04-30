@@ -134,7 +134,7 @@ is not used because it is not unique across processes.)
 \begin{exercise*}{Try it yourself!}
     \item There's already a mutex implementation in the kernel, but try implementing
     your own mutex using futex.
-    \item You can use the code at \texttt{userspace/tests/labs/lab3.1.c} as a starting point.
+    \item You can use the code at \texttt{userspace/labs/lab3.1.c} as a starting point.
 \end{exercise*}
 
 \subsection{Step 1: Understand the Mutex API}
@@ -231,7 +231,7 @@ below, in the build directory:
 
 You should see the following output (the thread IDs may be different):
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{assets/c3.futex-output.png}
     \caption{Some output from a successful test.}
