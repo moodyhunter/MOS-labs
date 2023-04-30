@@ -15,7 +15,7 @@ In this lab, we will be looking at the process management in MOS.
     \label{fig:mos-process-management-files}
 \end{figure}
 
-The process management in MOS is implemented in the \texttt{kernel/tasks} directory, and the
+The process management in MOS is implemented in the \texttt{kernel/tasks} directory and the
 corresponding header files are in \texttt{kernel/include/private/mos/tasks} as shown in
 Figure \ref{fig:mos-process-management-files}.
 
@@ -33,7 +33,7 @@ Now, let's look at the PCB structure in MOS. The PCB is defined as a struct name
 in \texttt{task\_types.h}.
 
 Several fields are defined in PCB, but we will only look at the ones that are relevant to
-process management, which are:
+process management, they are:
 
 \begin{itemize}
     \item \texttt{pid}: The process id.
@@ -76,7 +76,7 @@ process management, which are:
 
 \section{Thread Control Blocks}
 
-You may have noticed that the PCB above is \textit{little bit} different from the one in the
+You may have noticed that the PCB above is \textit{a little bit} different from the one in the
 lecture: It has neither `process state' nor `stack/heap/text memory regions'.
 
 Because, in MOS, a thread is the basic unit of execution instead of a process. Thus it's the thread that has a
@@ -151,7 +151,7 @@ the \texttt{entry} is passed as the argument.
 \end{note}
 
 After the main thread is created, the function allocates a heap by calling \texttt{mm\_alloc\_pages}
-and then completes the initialization of the PCB by adding the PCB to the process table.
+and then completing the initialization of the PCB by adding the PCB to the process table.
 
 We'll now look at the \texttt{thread\_new} function.
 
@@ -159,7 +159,7 @@ We'll now look at the \texttt{thread\_new} function.
 
 This function is defined in file \texttt{kernel/tasks/thread.c}.
 
-Similarly, it firstly calls \texttt{thread\_allocate} to allocate a TCB for the thread, which
+Similarly, it first calls \texttt{thread\_allocate} to allocate a TCB for the thread, which
 initializes the \texttt{tid}, \texttt{magic}, \texttt{owner}, \texttt{state} and \texttt{mode}
 fields.
 
@@ -174,7 +174,7 @@ After a TCB is allocated, the function allocates two types of stacks for the thr
 
     \item \textbf{User Mode Stack}
 
-          This is the stack used when the thread is running in user mode, nothing special here?
+          This is the stack used when the thread is running in user mode, nothing special here.
 \end{itemize}
 
 \begin{tip}
@@ -204,7 +204,7 @@ In MOS, a thread can be in one of the following states:
     \item \texttt{READY}: thread can be scheduled
     \item \texttt{RUNNING}: thread is currently running
     \item \texttt{BLOCKED}: thread is blocked by a wait condition
-    \item \texttt{DEAD}: thread is dead, and will be cleaned up soon by the scheduler
+    \item \texttt{DEAD}: thread is dead and will be cleaned up soon by the scheduler
 \end{itemize}
 
 The state transition diagram of a thread is shown in Figure \ref{fig:thread-state-transition}
@@ -323,7 +323,7 @@ after its creation.
 \subsection{Exercises for Part 1}
 
 \begin{exercise}
-    \item Read the code in \texttt{process.c}, find the function \texttt{process\_dump\_mmaps()}
+    \item Read the code in \texttt{process.c}, and find the function \texttt{process\_dump\_mmaps()}
     \item Print the memory map of the \texttt{init} process in \texttt{mos\_start\_kernel}.
     \item Find out where the memory map information is added to the process, and try
     printing out a log message each time a new memory map is added.

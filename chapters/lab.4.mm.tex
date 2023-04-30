@@ -21,7 +21,7 @@ Let's begin the journey!
     \begin{minted}{bash}
 cmake . -DENABLE_DEBUG_vmm=ON -DENABLE_DEBUG_cow=ON
     \end{minted}
-    \item (Otherwise you won't see important debugging messages)
+    \item (Otherwise, you won't see important debugging messages)
 \end{note}
 
 \section{Related Source Files}
@@ -80,7 +80,7 @@ A typical page table entry (PTE) contains at least the following fields:
 
 \subsection{The Kernel Page Table}
 
-After some theory, let's see how a page table really looks like in MOS, make
+After some theory, let's see what a page table really looks like in MOS, make
 101\% sure that you have the \texttt{vmm} debugging option enabled, and then start
 the kernel in QEMU:
 
@@ -97,10 +97,10 @@ the kernel in QEMU:
     something looks like \texttt{rw-} or \texttt{r--}, this is a dump of the
     page table of the kernel.
 
-    \item Given the fact that the kernel code starts at virtual address
-    \texttt{0xC0000000}, and the kernel heap start at \texttt{0xD0000000},
+    \item Given the fact that the kernel code starts at the virtual address
+    \texttt{0xC0000000}, and the kernel heap starts at \texttt{0xD0000000},
     can you determine which column in the dump corresponds to the virtual
-    address, and which is the physical address?
+    address, and which one is the physical address?
 
     \item{} [Extension] There are two types of kernel data: read-only data,
     and read-write. Can you spot the difference between them in the page table dump?
@@ -396,7 +396,7 @@ the user without zeroing it.
 
 This is inefficient because if the user requests a large number of pages but
 only uses one or two of them, the kernel will waste a lot of physical memory
-to store the unused pages.
+to store unused pages.
 
 Even worse, the non-zeroed pages may contain sensitive information from
 other processes, which is a security risk.
@@ -433,7 +433,7 @@ strengthen your understanding of CoW:
     \item It seems that CoW is a very useful technique, but is there a case
           where CoW is not useful?
 
-          \textbf{Hint}: Any interrupt takes time, and CoW is no exception.
+          \textbf{Hint}: Interrupt takes time, and CoW is no exception.
           There are cases where a process immediately modifies one page after it is
           allocated, can you find such a case?
 

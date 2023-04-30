@@ -41,7 +41,7 @@ MOS uses CMake as the build system generator, it supports many build systems lik
 
 \begin{note}
     \item It's the actual build system (e.g. `Make') that starts the compiler, linker, etc.,
-    CMake is only to \textbf{generate} the configuration files for the that build system.
+    CMake is only to \textbf{generate} the configuration files for that build system.
 \end{note}
 
 We'll use `Make' as the build system for MOS in this tutorial, but
@@ -68,7 +68,7 @@ See its \href{https://www.qemu.org/download}{download page} for more details.
 
 \subsection{i686-elf Toolchain} \label{sec:cross-compiler}
 
-As its name suggests, this is a cross toolchain for `i686-elf' target. `i686' means the 32-bit
+As its name suggests, this is a cross-toolchain for `i686-elf' target. `i686' means the 32-bit
 x86 architecture, and `elf' is the executable format. They together form the `target-triple' of
 the toolchain.
 
@@ -78,7 +78,7 @@ the toolchain.
     \item Read more about `target triple' at \url{https://wiki.osdev.org/Target_Triplet}.
 \end{tip}
 
-Unlike other applications (e.g. \texttt{bash} or \texttt{vim}) that they run on an existing
+Unlike other applications (e.g. \texttt{bash} or \texttt{vim}) that run on an existing
 operating system and a standard C library (say, \texttt{glibc} or \texttt{musl}). MOS itself is
 the operating system, thus there's not an existing OS for it to run on, neither a standard libc
 (i.e. no \texttt{printf}, no \texttt{malloc} etc.) for it to use, considering you're directly
@@ -96,7 +96,7 @@ toolchain is exactly for this situation.
     \item See \url{https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F}.
 \end{warning}
 
-\section{Installating the Tools}
+\section{Installing the Tools}
 
 \subsection{CMake} \label{sec:cmake-install}
 
@@ -211,7 +211,7 @@ bunch of output, similar to \ref{fig:cmake-output}.
 \end{figure}
 
 Don't worry if you see \texttt{C compiler ABI info} and \texttt{CXX compiler ABI info}
-fails, it's because CMake doesn't know what to do with a cross compiler, this check is meaningless.
+fails, it's because CMake doesn't know what to do with a cross-compiler, this check is meaningless.
 
 You may also see \texttt{grub-mkrescue} is not found, don't worry as well :), we are not going to use it.
 
@@ -395,7 +395,7 @@ function, you should see a message like Figure \ref{fig:gdb-paused}.
     have any questions.
 \end{note}
 
-As you may (or may not) realize, attaching GDB to QEMU is basically same as remote debugging, so
+As you may (or may not) realize, attaching GDB to QEMU is basically the same as remote debugging, so
 we can configure our IDE to do this automatically. But notice that:
 
 \begin{itemize}
@@ -434,7 +434,7 @@ port.
 \subsection{Summary}
 
 In this section, we've configured the cross-compiler, the build system and (possibly) the IDE for
-our future MOS kernel development. We've also learned how to debug MOS kernel using QEMU and GDB.
+our future MOS kernel development. We've also learned how to debug the MOS kernel using QEMU and GDB.
 
 Below are some exercises for you to practice and test your environment setup.
 
@@ -446,15 +446,15 @@ Below are some exercises for you to practice and test your environment setup.
     Compile and run the kernel, do you see your name printed out?
 
     \begin{tip}
-        \item There are various ways to print out strings in MOS kernel, you can either of:
+        \item There are various ways to print out strings in the MOS kernel, you can either use:
         \texttt{printk}, \texttt{pr\_info}, \texttt{pr\_info2}, \texttt{pr\_emph}, \texttt{pr\_warn},
-        \texttt{pr\_emerg} or \texttt{pr\_fatal}, they have similar usage like \texttt{printf}.
+        \texttt{pr\_emerg} or \texttt{pr\_fatal}. They have similar usage to \texttt{printf}.
         \item Can you spot the difference between \texttt{pr\_info} and \texttt{pr\_info2}?
     \end{tip}
 
     \item Try to set a breakpoint somewhere in the \texttt{mos\_start\_kernel} function, start debugging
     the kernel and see if it works.
 
-    \item Optionally, try play with different CMake options, like \texttt{MOS\_DEBUG\_ALL}. See what happens to the
+    \item Optionally, try playing with different CMake options, like \texttt{MOS\_DEBUG\_ALL}. See what happens to the
     kernel log.
 \end{exercise}
