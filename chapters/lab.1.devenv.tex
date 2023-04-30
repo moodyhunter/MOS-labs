@@ -4,7 +4,7 @@ In this lab, we'll set up the basic development environment for the rest of our 
 I'll introduce you to the tools and we'll install them, then we'll compile MOS, run it in QEMU
 for the first time, and then attach GDB to it.
 
-Finally, and hopefully, you can get your favorite IDE set up to work with MOS.
+Finally, and hopefully, you can get your favourite IDE set up to work with MOS.
 
 \section{Introduction to the Tools}
 
@@ -41,7 +41,7 @@ MOS uses CMake as the build system generator, it supports many build systems lik
 
 \begin{note}
     \item It's the actual build system (e.g. `Make') that starts the compiler, linker, etc.,
-    CMake is only to \textbf{generate} the configuration files for such build system.
+    CMake is only to \textbf{generate} the configuration files for the that build system.
 \end{note}
 
 We'll use `Make' as the build system for MOS in this tutorial, but
@@ -91,7 +91,7 @@ toolchain is exactly for this situation.
     \item One should never use a hosted compiler (e.g. the \texttt{gcc} installed on the lab machine)
     to cross-compile for a bare-metal environment when they are targeting a different architecture,
     (\texttt{x86} and \texttt{x86\_64} are different), it \textit{\textbf{may sometimes}} work, but
-    you may encouter some weird bugs.
+    you may encounter some weird bugs.
 
     \item See \url{https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F}.
 \end{warning}
@@ -116,7 +116,7 @@ tested is \texttt{2.12}.
 
 \subsection{qemu-system-i386} \label{sec:qemu-install}
 
-Major Linux distributions provides a package for QEMU, thus it's recommended to install it via
+Major Linux distributions provide a package for QEMU, thus it's recommended to install it via
 your Linux's package manager.
 
 \subsection{i686-elf Toolchain} \label{sec:cross-compiler-install}
@@ -229,7 +229,7 @@ This command will only build the core part of MOS, which is the kernel and the u
 See the table below for an example list of targets.
 
 \begin{tip}
-    \item Think of a ``target'' as a deliverable, for example, building the \texttt{mos\_kernel} target
+    \item Think of a `target' as a deliverable, for example, building the \texttt{mos\_kernel} target
     will produce a kernel binary, building the \texttt{mos\_userspace\_programs} will ensure
     all the userspace programs are built.
 \end{tip}
@@ -247,7 +247,7 @@ See the table below for an example list of targets.
     \begin{note}
         \item This is not a complete list.
         \item For a complete list of targets, you can look at the \texttt{summary.txt} in the \texttt{build} directory,
-        and see the ``\texttt{Userspace Targets}'', ``\texttt{Utility Targets}'' and ``\texttt{Bootable Targets}'' section.
+        and see the `\texttt{Userspace Targets}', `\texttt{Utility Targets}' and `\texttt{Bootable Targets}' section.
     \end{note}
     \caption{Targets}
     \label{tab:targets}
@@ -256,7 +256,7 @@ See the table below for an example list of targets.
 We are going to build the \texttt{multiboot} and \texttt{mos\_initrd} targets, these are the two
 `utility' targets that 1) produce a bootable kernel and 2) create an initrd image.
 
-An `initrd' is a compressed archive that contains our userspace programs, it literally means ``initial ramdisk'',
+An `initrd' is a compressed archive that contains our userspace programs, it means `initial ramdisk',
 that is, the disk image that is loaded into the RAM when the kernel boots.
 
 So the command will be \texttt{make multiboot mos\_initrd} (replace \texttt{make} with \texttt{ninja} if you are using Ninja).
@@ -295,7 +295,7 @@ You can pass more arguments to QEMU:
           the preferred amount of RAM is 4GB, less RAM may cause the kernel to fail.
     \item \texttt{-append} to pass arguments to the kernel, several arguments are:
           \begin{itemize}
-              \item \texttt{quiet}: suppress (most-of) all non-warning kernel messages.
+              \item \texttt{quiet}: suppress (most of) all non-warning kernel messages.
               \item \texttt{init=}: path to the init program, e.g. \texttt{init=/initrd/programs/mossh}.
           \end{itemize}
           For a complete list of supported arguments, see the MOS documentation section.

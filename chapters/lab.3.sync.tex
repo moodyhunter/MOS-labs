@@ -2,7 +2,7 @@
 
 \section{Introduction}
 
-You have already learned about basic concepts of mutex, semaphores and condition variables. Now we'll
+You have already learned about the basic concepts of mutex, semaphores and condition variables. Now we'll
 look at examples of how to use them.
 
 In this chapter, the word \textbf{acquire} means `\textit{to lock}', and \textbf{release} means
@@ -30,12 +30,12 @@ Under normal circumstances, the spinlock acquiring and releasing are defined as 
 
 \begin{tip*}{The \texttt{test\_and\_set} function does the following:}
     \item Store the value of the flag into a temporary variable.
-    \item Set the flag to a none-zero value.
+    \item Set the flag to a non-zero value.
     \item Return the value of the temporary variable.
 \end{tip*}
 
 Note that the actual GCC implementation of the \texttt{\_\_atomic\_test\_and\_set} returns a
-boolean, meaning that our flag is either 0, or \textit{some implementation defined nonzero ``set'' value}
+boolean, meaning that our flag is either 0, or \textit{some implementation-defined nonzero `set' value}
 \footnote{\url{https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html}}.
 
 \subsection{Acquiring the Spinlock}
@@ -66,29 +66,29 @@ without wasting CPU cycles.
 
 Futex is a mechanism that allows a thread to be blocked until someone else wakes it up.
 
-When a thread tries to acquire some resource:
+When a thread tries to acquire some resources:
 
 \begin{itemize}
     \item If the resource is available, it will acquire it and continue.
     \item Otherwise, if the resource is not available:
           \begin{itemize}
-              \item it will put itself to sleep, until the resource owner wakes it up,
+              \item it will put itself to sleep until the resource owner wakes it up,
               \item then it will try to acquire the resource again.
               \item If the resource is still not available, it will go back to sleep.
           \end{itemize}
 \end{itemize}
 
-Correspondingly, when a thread releases some resource, it simply wakes up the threads
+Correspondingly, when a thread releases some resources, it simply wakes up the threads
 that are waiting for the resource.
 
 \subsection{Related Source Files}
 
 The futex implementation is in the file \texttt{kernel/locks/futex.c}, there are only
-two functions that used to implement the futex:
+two functions that are used to implement the futex:
 
 \begin{itemize}
     \item \texttt{bool futex\_wait(futex\_word\_t *futex, futex\_word\_t expected);} \\
-          Accepts a pointer to the futex object, and a expected value contained in the
+          Accepts a pointer to the futex object, and an expected value contained in the
           futex object.
     \item \texttt{bool futex\_wake(futex\_word\_t *futex, size\_t num\_to\_wake);} \\
           Accepts a pointer to the futex object, and the maximum number of threads to
@@ -106,12 +106,12 @@ is not used because it is not unique across processes.)
 \subsection{Futex Wait Operation}
 
 \begin{itemize}
-    \item Firstly we check if the futex object equals to the expected value.
+    \item Firstly we check if the futex object equals the expected value.
           \begin{note}
               \item If the futex object is not equal to the expected value, we return \texttt{false}.
           \end{note}
     \item If the futex object is equal to the expected value, we will get the key of
-          the futex object and then get the wait queue corresponds to the key.
+          the futex object and then get the wait queue corresponding to the key.
     \item Then we will append the current thread to the wait queue.
     \item Finally, we set the thread state to \texttt{THREAD\_STATE\_BLOCKED} and \texttt{reschedule()}
           to another thread.
@@ -174,8 +174,8 @@ return \texttt{true}. Otherwise, it will return \texttt{false}.
 
 \subsection{Step 3: Understand the `futex\_wait' and `futex\_wake' System Calls}
 
-The \texttt{futex\_wait} and \texttt{futex\_wake} system call is wrapped by the
-the functions prefixied with \texttt{syscall\_}, e.g. \texttt{syscall\_futex\_wait}.
+The \texttt{futex\_wait} and \texttt{futex\_wake} system call is wrapped by
+the functions prefixed with \texttt{syscall\_}, e.g. \texttt{syscall\_futex\_wait}.
 These functions accept exactly the same arguments as the ones in the kernel introduced
 in the previous section.
 
@@ -199,7 +199,7 @@ And for \texttt{futex\_wake}:
 
 \subsection{Step 4: `my\_mutex\_acquire' and `my\_mutex\_release'}
 
-Now it comes to the real implementation!
+Now it comes to real implementation!
 
 The idea of a mutex is simple:
 

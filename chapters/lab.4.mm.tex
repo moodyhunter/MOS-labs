@@ -2,7 +2,7 @@
 
 \section{Introduction}
 
-Conguratulations on reaching the final lab of the MOS project! You have
+Congratulations on reaching the final lab of the MOS project! You have
 made a lot of progress in the past few weeks.
 
 In this lab, we will see, how memory is managed in the MOS kernel, which includes:
@@ -54,15 +54,15 @@ A typical page table entry (PTE) contains at least the following fields:
           in memory.
 
     \item Several \textbf{permission} bits: These bits determine if the page
-          can be accessed by the user space programs, if it can be written to,
+          can be accessed by the user-space programs, if it can be written to,
           and if it can be executed, they are usually called the \textbf{user},
           \textbf{W} and \textbf{X} bits.
 
           \begin{exercise*}{Think about it}
               \item What will these bits be set to, for a page that contains
               the kernel code?
-              \item \dots how about the kernel's read-only data?
-              \item \dots how about user space code?
+              \item \dots How about the kernel's read-only data?
+              \item \dots How about user-space code?
           \end{exercise*}
 
     \item A \textbf{present} bit: if this bit is set, it means that the page
@@ -71,10 +71,10 @@ A typical page table entry (PTE) contains at least the following fields:
 
           If this bit is set, it usually means that the page is readable, with
           the help of the \textbf{user} bit mentioned above, we can determine
-          if the page is readable by the user space programs or kernel only.
+          if the page is readable by the user-space programs or kernel only.
 
           \begin{exercise*}{Think about it}
-              \item What does it mean by ``the page is currently in memory''?
+              \item What does it mean by `the page is currently in memory'?
           \end{exercise*}
 \end{itemize}
 
@@ -155,12 +155,12 @@ bool define_syscall(my_syscall_name)(my_type_t my_arg)
 \end{minted}
 
 \begin{note}
-    \item At the first glance, this function may look a bit strange.
+    \item At first glance, this function may look a bit strange.
 
     \item But don't worry, the \texttt{define\_syscall()} macro is just a
     C macro that prepends a `\texttt{impl\_syscall\_}' to the function name.
 
-    The full function declaration looks like:
+    The full function declaration looks like this:
 
     \begin{minted}{c}
 bool impl_syscall_my_syscall_name(my_type_t my_arg);
@@ -187,8 +187,8 @@ There are several helpers that you can use to implement this system call:
 
 \subsubsection{Recompile and test your implementation}
 
-The next important step is to recompile the kernel, so that the new system call
-is available to user space programs, and finally test it.
+The next important step is to recompile the kernel so that the new system call
+is available to user-space programs, and finally test it.
 
 \begin{exercise}
     \item Recompile the kernel, (and fix any compilation errors).
@@ -224,7 +224,7 @@ either you didn't have the syscall named correctly, or you didn't recompile the 
 
 Different processes have different page tables, where the virtual addresses are
 mapped to different physical addresses. The kernel will switch the page table
-when the thread being switched to belongs to another process, so that the addresses
+when the thread being switched to belongs to another process so that the addresses
 are \textbf{isolated} from each other.
 
 However, the kernel itself also needs paging to work, so it must have a page table
@@ -236,7 +236,7 @@ as well.
 
     When does the `\textbf{switch}' happen, and where should the code, that
     does the switching, be located? Can it be in the kernel, or should it be
-    in the user space?
+    in the user-space?
 
     \item If the kernel page table is \textit{\textbf{part} of} the user page table:
 
@@ -256,7 +256,7 @@ kernel pages become accessible. But when does this happen?
 \begin{note*}{The CPU Black Magic}
     \item The answer is, it happens after a system call interrupt is triggered,
     but before the system call handler is executed, the transition happens
-    entirely inside the CPU and is \textbf{invisible} to outside world.
+    entirely inside the CPU and is \textbf{invisible} to the outside world.
 
     \item There is a special structure which specifies that the CPU should
     switch to `\textbf{kernel mode}' before executing the interrupt handler.
@@ -278,21 +278,21 @@ page that is either:
     \item Executing the code in a non-executable page, i.e. \textbf{X} bit is unset.
 \end{itemize}
 
-In such cases, the CPU saves the address that caused the fault, and turn back
+In such cases, the CPU saves the address that caused the fault, and turns back
 to execute the page fault handler in the kernel for help.
 
 It is then the kernel's responsibility to decide what to do with the faulting
 address, and choose to either:
 
 \begin{itemize}
-    \item Map the address to a physical page, and continue the execution.
-    \item Kill the process, and report the error to the user.
+    \item Map the address to a physical page and continue the execution.
+    \item Kill the process and report the error to the user.
 \end{itemize}
 
 \section{Copy-on-write}
 
 Copy-on-write (or CoW for short) is a technique that allows the kernel to
-\textbf{delay} the copying of a page content until it is actually modified.
+\textbf{delay} the copying of a page's content until it is actually modified.
 
 \subsection{Why do we need CoW?}
 
@@ -301,7 +301,7 @@ a new block of memory, it is unlikely that the process will immediately
 modify all the memory it just allocated.
 
 Therefore, it is a waste of physical memory to copy the content
-immediately, or to zero out the newly allocated memory.
+immediately, or zero out the newly allocated memory.
 
 The copy-on-write technique allows the kernel to delay the copying,
 until the child process actually modifies the pages.
@@ -309,7 +309,7 @@ until the child process actually modifies the pages.
 
 \subsection{How does CoW work with paging?}
 
-CoW is relatively easy to implement with paging, only a few steps are needed:
+The CoW is relatively easy to implement with paging, only a few steps are needed:
 
 \begin{enumerate}
     \item When a process asks the kernel to allocate a new page or to fork, the kernel,
@@ -329,7 +329,7 @@ CoW is relatively easy to implement with paging, only a few steps are needed:
           the parent process as \textbf{read-only}, so that either process
           can trigger a page fault.
 
-    \item When a page fault is triggered by writting to the page, the
+    \item When a page fault is triggered by writing to the page, the
           kernel allocates a new physical page, copies the content from the
           zero page, and \textbf{re}maps the virtual address to the new physical page.
     \item The kernel marks the new page as \textbf{read-write}, so that
@@ -387,11 +387,11 @@ The function gives a simple overview of how CoW can be resolved:
 \subsection{Allocating a Zeroed Page}
 
 Allocation of a zero page is relatively simple, the kernel just needs to
-find a new virtual address, and map it to the zero page. This is done by
+find a new virtual address and map it to the zero page. This is done by
 \texttt{mm\_alloc\_zeroed\_pages}.
 
-The current implementation of \texttt{mmap} does not allocates a zero page
-for the process, instead, it allocates a physical page and return to
+The current implementation of \texttt{mmap} does not allocate a zero page
+for the process, instead, it allocates a physical page and returns to
 the user without zeroing it.
 
 This is inefficient because if the user requests a large number of pages but

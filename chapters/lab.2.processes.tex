@@ -1,6 +1,6 @@
 \chapter{Lab 2 - Processes}
 
-Congratulations on completing the first lab! Hopefully you have had a chance to play
+Congratulations on completing the first lab! Hopefully, you have had a chance to play
 around with the MOS kernel and have a better understanding of its structure.
 
 In this lab, we will be looking at the process management in MOS.
@@ -20,7 +20,7 @@ corresponding header files are in \texttt{kernel/include/private/mos/tasks} as s
 Figure \ref{fig:mos-process-management-files}.
 
 \begin{note}
-    \item The \texttt{kernel/include/private} directory is a convension used in MOS, which
+    \item The \texttt{kernel/include/private} directory is a convention used in MOS, which
     contains the header files that are \textbf{not} meant to be used by userspace programs.
 \end{note}
 
@@ -62,7 +62,7 @@ process management, which are:
           this number to refer to the file in the future.
 
           The \texttt{io\_t} structure is defined in \texttt{kernel/include/private/mos/io/io.h},
-          the details of which is probably beyond the scope of this lab.
+          details of which are probably beyond the scope of this lab.
 
     \item \texttt{threads}: A list of threads.
 
@@ -79,12 +79,12 @@ process management, which are:
 You may have noticed that the PCB above is \textit{little bit} different from the one in the
 lecture: It has neither `process state' nor `stack/heap/text memory regions'.
 
-Because, in MOS, a thread is basic unit of execution instead of a process. Thus it's the thread that has a
+Because, in MOS, a thread is the basic unit of execution instead of a process. Thus it's the thread that has a
 `state' and a `stack', and the process is just a collection of threads.
 
 The thread control block is defined in the same file as the PCB. You can see that it contains
-a \texttt{tid} for a thread id, and a \texttt{state} field to indicate the state of the thread,
-its owner process, two stacks for the kernel and user mode respectively. There's also a
+a \texttt{tid} for a thread id, a \texttt{state} field to indicate the state of the thread,
+its owner process, and two stacks for the kernel and user mode respectively. There's also a
 \texttt{context} pointer, this will be used in context switching, we'll look at that later.
 
 \section{Process Creation}
@@ -136,7 +136,7 @@ the important ones among them are:
 
 The function first allocates a PCB by calling \texttt{process\_allocate}. In that function, a
 \texttt{process\_t} structure is allocated and initialized. The PID, magic number, name and
-parent are set, then it calls \texttt{mm\_create\_user\_pgd} to create a user-mode page table,
+parent are set, and then it calls \texttt{mm\_create\_user\_pgd} to create a user-mode page table,
 which will become the `address space' of the process.
 
 Going back to \texttt{process\_new}, several (precisely, 3) calls to \texttt{process\_attach\_ref\_fd}
@@ -151,7 +151,7 @@ the \texttt{entry} is passed as the argument.
 \end{note}
 
 After the main thread is created, the function allocates a heap by calling \texttt{mm\_alloc\_pages}
-and then completes the initialization of the PCB by adding the PCB into the process table.
+and then completes the initialization of the PCB by adding the PCB to the process table.
 
 We'll now look at the \texttt{thread\_new} function.
 
@@ -185,14 +185,14 @@ After a TCB is allocated, the function allocates two types of stacks for the thr
 \end{tip}
 
 After stacks are allocated, the function calls \texttt{platform\_context\_setup}, which is
-a platform-specific function that setup the initial context of the thread.
+a platform-specific function that sets up the initial context of the thread.
 
-Although we won't go into details into architecture-specific code, it's worth noting it's here
+Although we won't go into details about architecture-specific code, it's worth noting it's here
 that the \texttt{entry} and \texttt{arg} arguments are used. For example, the entry will be
 the initial instruction pointer of the thread and the \texttt{arg} will be pushed onto the stack
 or passed in a register (depending on the architecture).
 
-After the context is setup, the function adds the thread into the thread table, completing
+After the context is set up, the function adds the thread to the thread table, completing
 the initialization of that thread.
 
 \subsection{Thread States}
@@ -240,8 +240,8 @@ The state transition diagram of a thread is shown in Figure \ref{fig:thread-stat
     \texttt{RUNNING} without going through the \texttt{READY} state. This is different
     from what's in the lecture, where a thread is then \texttt{admitted}.
 
-    This is because the scheduler in MOS require state as an indicator of whether a thread
-    needs special setup before really jumping to the thread entry point.
+    This is because the scheduler in MOS requires a state as an indicator of whether a thread
+    needs a special setup before really jumping to the thread entry point.
 \end{note}
 
 In later chapters, we'll see what really happens when a thread is scheduled, blocked
@@ -253,7 +253,7 @@ In MOS, a process has a virtual address space that is shared by all its threads.
 similar to what Linux does. The underlying mechanism is called `paging' which we'll
 also cover in later chapters.
 
-The figure \ref{fig:mos-process-memory-layout} shows the memory layout of a process in MOS
+Figure \ref{fig:mos-process-memory-layout} shows the memory layout of a process in MOS
 after its creation.
 
 \begin{figure}
@@ -281,7 +281,7 @@ after its creation.
         \bitbox[#1]{16}[bgcolor=gray]{\small Gap}
     }
 
-    Color Legend:
+    Colour Legend:
     \colorbox{gray}{\textbf{Unavailable}}
     \colorbox{lightred}{\textbf{Kernel Only}}
     \colorbox{lightgreen}{\textbf{User Read-Only}}
@@ -325,8 +325,8 @@ after its creation.
 \begin{exercise}
     \item Read the code in \texttt{process.c}, find the function \texttt{process\_dump\_mmaps()}
     \item Print the memory map of the \texttt{init} process in \texttt{mos\_start\_kernel}.
-    \item Find out where is those memory map information is added to the process, and try
-    print out a log message each time a new memory map is added.
+    \item Find out where the memory map information is added to the process, and try
+    printing out a log message each time a new memory map is added.
 \end{exercise}
 
 \section{The famous \texttt{fork()} system call}
