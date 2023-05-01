@@ -282,7 +282,10 @@ Once we have compiled MOS, we can run it in QEMU.
 The command passed to QEMU will be flexible based on your needs, but the most basic command is:
 
 \begin{verbatim}
-    qemu-system-i386 -m 4G -kernel mos_multiboot.bin -initrd initrd.cpio -serial stdio
+    qemu-system-i386 \
+        -kernel mos_multiboot.bin \
+        -initrd initrd.cpio \
+        -serial stdio -m 4G
 \end{verbatim}
 
 You can pass more arguments to QEMU:
@@ -338,21 +341,34 @@ This means that QEMU is waiting for a GDB connection, and we can now continue to
 
 \subsection{Configuring GDB} \label{sec:gdb-config}
 
-Note that we are targeting the \texttt{i686-elf} architecture, so you should use \texttt{i686-elf-gdb}
+Note that we are targeting the \texttt{i686-elf}, so you should use \texttt{i686-elf-gdb}
 instead of \texttt{gdb}.
 
-To begin with, we need to tell GDB where the kernel file is, so that GDB can load debug information
-from it.
+You should have seen a \texttt{gdbinit} file in the \texttt{build} directory.
+This file tells GDB to recognize our \textbf{userspace} programs. If you are debugging a userspace
+program, two extra steps are required:
 
-You've probably already seen a \texttt{gdbinit} file in the \texttt{build} directory. This file
-contains commands for GDB to recognize our userspace programs, we'll pass this file to GDB using
-the \texttt{-x} argument.
+\begin{itemize}
+    \item Adding a command to the end of the \texttt{CMakeLists.txt} file:
+          \begin{minted}{cmake}
+    # replace init with whatever the program name is
+    # e.g. add_to_gdbinit(2048) for the 2048 game
+    add_to_gdbinit(init)
+          \end{minted}
+          And then run \texttt{cmake .} again to regenerate the \texttt{gdbinit} file.
 
-So the overall command will be:
-
-\begin{verbatim}
+    \item Starting GDB with an additional argument:
+          \begin{verbatim}
     i686-elf-gdb ./mos_multiboot.bin -x ./gdbinit
+          \end{verbatim}
+\end{itemize}
+
+If you are only debugging the kernel, you can simply run:
+\begin{verbatim}
+    i686-elf-gdb ./mos_multiboot.bin.
 \end{verbatim}
+
+In the following sections, we will assume that the \texttt{init} program is being debugged.
 
 \subsection{Attaching to QEMU} \label{sec:gdb-attach}
 
@@ -430,6 +446,29 @@ port.
     \caption{VSCode Debugging MOS}
     \label{fig:vscode-debugging}
 \end{figure}
+
+\section{Playing with the MOS shell}
+
+You should see blue texts like \textbf{Welcome to MOS-sh!} appearing
+on the terminal you used to run QEMU. This is the MOS shell, which allows
+you to run some simple commands.
+
+\begin{exercise}
+    \item Try typing \texttt{help} in the MOS shell, you'll see a list of builtin
+    commands, including \texttt{echo}, \texttt{which}, \texttt{cd} and \texttt{pwd}.
+    \item Try those commands and see what they do.
+\end{exercise}
+
+\begin{note*}{Current Limitations}
+    \item The MOS kernel is still in its early stage, the memory exited process will
+    not be freed. Especially the page table of the exited process will not be freed.
+    \item Because of this, the MOS kernel will run out of memory after running some programs.
+    The number of programs you can run depends on the amount of memory you have. The number
+    is around 185.
+
+    \item Try `\texttt{repeat 180 ls}' in the MOS shell, you'll see the new processes
+    cannot be created after some time.
+\end{note*}
 
 \subsection{Summary}
 

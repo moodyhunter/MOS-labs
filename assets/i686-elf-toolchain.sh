@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export PREFIX="/tmp"           # <--- CHANGE THIS
 export MAKEFLAGS="-j$(nproc)"  # Change this to your liking
 export BINUTILS_VERSION="2.40" # The latest version at the time of writing
@@ -5,9 +7,14 @@ export GCC_VERSION="13.1.0"    # The latest version at the time of writing
 export GDB_VERSION="13.1"      # The latest version at the time of writing
 export TARGET="i686-elf"       # The target triple
 
-set -e # Exit on error
+# exit on error
+set -e
 
-mkdir -p "$PREFIX"
+echo "Compiling $TARGET toolchain..."
+echo "This will take a LONG TIME. Go grab a coffee or something."
+echo "The logs will be saved to $PREFIX/_work, and the binaries will be installed to $PREFIX/bin."
+
+mkdir "$PREFIX"
 cd "$PREFIX"
 mkdir _work && cd _work
 
@@ -17,13 +24,16 @@ tar -xf binutils-$BINUTILS_VERSION.tar.gz
 
 cd binutils-$BINUTILS_VERSION
 mkdir build && cd build
+
+echo "Configuring binutils..."
 ../configure \
     --target="$TARGET" \
     --prefix="$PREFIX" \
     --disable-nls \
-    --disable-werror
+    --disable-werror >binutils_configure.log
 
-make && make install
+echo "Compiling binutils..."
+make && make install >binutils_make.log
 cd ../..
 
 # Download and compile GCC
@@ -32,6 +42,8 @@ tar -xf gcc-$GCC_VERSION.tar.gz
 
 cd gcc-$GCC_VERSION
 mkdir build && cd build
+
+echo "Configuring GCC..."
 ../configure \
     --target="$TARGET" \
     --prefix="$PREFIX" \
@@ -40,11 +52,12 @@ mkdir build && cd build
     --without-headers \
     --enable-libgcc \
     --enable-languages=c,c++ \
-    --disable-build-format-warnings
+    --disable-build-format-warnings >gcc_configure.log
 
 # This will take a **long** time
-make all-gcc all-target-libgcc
-make install-gcc install-target-libgcc
+echo "Compiling GCC... This will take a LONG TIME."
+make all-gcc all-target-libgcc >gcc_make.log
+make install-gcc install-target-libgcc >gcc_install.log
 cd ../..
 
 # Download and compile GDB
@@ -53,11 +66,14 @@ tar -xf gdb-$GDB_VERSION.tar.gz
 
 cd gdb-$GDB_VERSION
 mkdir build && cd build
+
+echo "Configuring GDB..."
 ../configure \
     --target="$TARGET" \
     --prefix="$PREFIX" \
-    --program-prefix="$TARGET-"
+    --program-prefix="$TARGET-" >gdb_configure.log
 
-make && make install
+echo "Compiling GDB..."
+make && make install >gdb_make.log
 cd ../..
 cd .. # back to $PREFIX
