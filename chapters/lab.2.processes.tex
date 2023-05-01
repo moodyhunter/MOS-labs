@@ -390,3 +390,12 @@ For a correct implementation, you should see the following output:
     \caption{The output of \texttt{lab2.1}}
     \label{fig:lab2.1-fork}
 \end{figure}
+
+If you see a kernel panic saying:
+
+\begin{minted}{text}
+    Assertion failed: block.address_space.pgd == process->pagetable.pgd
+\end{minted}
+
+Then it means that you have not copied the memory layout correctly.
+Pay special attention on the \texttt{vmblock\_t} structure.

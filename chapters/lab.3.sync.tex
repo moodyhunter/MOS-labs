@@ -221,13 +221,13 @@ The idea of a mutex is simple:
 If you have implemented the mutex correctly, you can start testing by running the command
 below, in the build directory:
 
-\begin{verbatim}
+\begin{minted}{bash}
     qemu-system-i386 \
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
-        -serial stdio \
-        -append init=/initrd/tests/lab3.1
-\end{verbatim}
+        -m 4G -serial stdio \
+        -append "init=/initrd/tests/lab3.1"
+\end{minted}
 
 You should see the following output (the thread IDs may be different):
 
@@ -248,13 +248,13 @@ synchronization methods:
     \item With mutexes implemented using futex.
 \end{itemize}
 
-\begin{verbatim}
+\begin{minted}{bash}
     qemu-system-i386 \
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
-        -serial stdio \
-        -append init=/initrd/tests/lab3.2
-\end{verbatim}
+        -m 4G -serial stdio \
+        -append "init=/initrd/tests/lab3.2"
+\end{minted}
 
 \begin{exercise}
     \item What is the performance difference between the three methods?
@@ -263,7 +263,18 @@ synchronization methods:
 
 \section{[Extension]: Robust List}
 
-You can use the \texttt{lab3.3} program to test this scenario:
+You can use the \texttt{lab3.3} program to test this scenario, the command is:
+
+\begin{minted}{bash}
+    qemu-system-i386 \
+        -kernel mos_multiboot.bin \
+        -initrd initrd.cpio \
+        -m 4G -serial stdio \
+        -append "init=/initrd/tests/lab3.3"
+\end{minted}
+
+You may want to read the source code of \texttt{lab3.3} to understand the
+scenario, the scenario is as follows:
 
 \begin{enumerate}
     \item There are two threads, \texttt{A} and \texttt{B}.
@@ -272,13 +283,11 @@ You can use the \texttt{lab3.3} program to test this scenario:
     \item Thread \texttt{A} exits, without releasing the lock.
 \end{enumerate}
 
-
 \begin{exercise*}{Think about it:}
     \item With the current implementation of \texttt{futex}
     \item What will happen to the thread \texttt{B}?
     \item Will it be woken up? Why?
 \end{exercise*}
-
 
 \noindent
 For answers, please refer to the Linux manual page of \texttt{set\_robust\_list(2)}, can you

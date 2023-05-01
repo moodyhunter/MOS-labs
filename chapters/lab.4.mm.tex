@@ -17,9 +17,9 @@ Let's begin the journey!
 
 \begin{note}
     \item This lab requires you to have the \texttt{vmm} and \texttt{cow} debugging options
-    enabled. You can use the following command to enable them:
+    enabled. You can run the following command in the build directory to enable them:
     \begin{minted}{bash}
-cmake . -DENABLE_DEBUG_vmm=ON -DENABLE_DEBUG_cow=ON
+cmake . -DMOS_DEBUG_vmm=ON -DMOS_DEBUG_cow=ON
     \end{minted}
     \item (Otherwise, you won't see important debugging messages)
 \end{note}
@@ -88,11 +88,15 @@ the kernel in QEMU:
     qemu-system-i386 \
         -kernel mos_multiboot.bin \
         -initrd initrd.cpio \
-        -m 4G -serial stdio
+        -m 4G -serial stdio \
+        -append "init=/initrd/programs/shutdown"
 \end{minted}
 
+The kernel will print a bunch of messages, and then shuts down. But the point here
+is to see the page table dump, which looks like Figure~\ref{fig:mm_dump_pagetable}.
+
 \begin{exercise}
-    \item Just before the output `\textbf{Welcome to MOS!}' and after
+    \item Scroll up to the top, just before the output `\textbf{Welcome to MOS!}' and after
     `\textbf{Kernel Page Table:}', you should see a bunch of addresses and
     something looks like \texttt{rw-} or \texttt{r--}, this is a dump of the
     page table of the kernel.
@@ -192,7 +196,14 @@ is available to user-space programs, and finally test it.
 
 \begin{exercise}
     \item Recompile the kernel, (and fix any compilation errors).
-    \item Start QEMU with \texttt{-append 'init=/initrd/tests/lab4.1'}.
+    \item Start QEMU with the following command:
+    \begin{minted}{bash}
+qemu-system-i386 \
+    -kernel mos_multiboot.bin \
+    -initrd initrd.cpio \
+    -m 4G -serial stdio \
+    -append "init=/initrd/tests/lab4.1"
+    \end{minted}
     This will run our test program \texttt{lab4.1} as the init process.
 \end{exercise}
 
@@ -380,8 +391,15 @@ The function gives a simple overview of how CoW can be resolved:
     the code in it and see what happens.
     \item Can you re-implement the function by yourself?
 
-    Run QEMU with \texttt{-append 'init=/initrd/tests/lab4.2'} to test your
-    implementation.
+    Run QEMU with the following command to test your implementation:
+
+    \begin{minted}{bash}
+    qemu-system-i386 \
+        -kernel mos_multiboot.bin \
+        -initrd initrd.cpio \
+        -m 4G -serial stdio \
+        -append "init=/initrd/tests/lab4.2"
+    \end{minted}
 \end{exercise*}
 
 \subsection{Allocating a Zeroed Page}
@@ -404,8 +422,7 @@ other processes, which is a security risk.
 \begin{exercise}
     \item Modify the \texttt{mmap\_anonymous} function in \texttt{kernel/mm/mmap.c},
     so that it uses CoW to allocate a zero page for the process.
-    \item Run QEMU with \texttt{-append 'init=/initrd/tests/lab4.3'} to test your
-    implementation.
+    \item Run QEMU with \texttt{lab4.3} as init to test your implementation.
 
     Your implementation should pass the test, as shown in Figure \ref{fig:lab4.3}.
 
@@ -443,3 +460,11 @@ strengthen your understanding of CoW:
 
           (I don't know the answer)
 \end{itemize}
+
+\section{Congratulations!}
+
+You have finished all 4 labs of the MOS project. You should now have a basic
+understanding of how an operating system works, and for sure, you have
+learned a lot of new things.
+
+Wish you all the best in the future!
