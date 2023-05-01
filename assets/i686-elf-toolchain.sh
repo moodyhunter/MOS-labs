@@ -1,8 +1,8 @@
 export PREFIX="/tmp"           # <--- CHANGE THIS
 export MAKEFLAGS="-j$(nproc)"  # Change this to your liking
-export BINUTILS_VERSION="2.39" # The latest version at the time of writing
-export GCC_VERSION="12.2.0"    # The latest version at the time of writing
-export GDB_VERSION="12.1"      # The latest version at the time of writing
+export BINUTILS_VERSION="2.40" # The latest version at the time of writing
+export GCC_VERSION="13.1.0"    # The latest version at the time of writing
+export GDB_VERSION="13.1"      # The latest version at the time of writing
 export TARGET="i686-elf"       # The target triple
 
 set -e # Exit on error
